@@ -5,7 +5,7 @@ const fetch = require('node-fetch');
 const simpleGit = require('simple-git/promise');
 const changelog = require('./changelog');
 
-const pkg = require('../package.json');
+const pkg = require('../lerna.json');
 
 const git = simpleGit(process.cwd());
 const { version } = pkg;
@@ -24,7 +24,7 @@ const checkVersion = async () => {
 const checkTag = async ({ current }) => {
   // 更新当前分支
   console.log(`pulling branch is: ${current} \r\n`);
-  await git.pull('origin', current, { '--tags': null, '--no-rebase': null, '--ff-only': null });
+  // await git.pull('origin', current, { '--tags': null, '--no-rebase': null, '--ff-only': null });
 
   const { taggedTags } = await git.tags();
   if (taggedTags && taggedTags.includes(`${tagPrefix}${version}`)) {
@@ -44,15 +44,14 @@ const checkBranch = async ({ current }) => {
 const tagTag = async (tag) => {
   const tagMessage = await changelog(process.env.AUTO === '1');
   git.addAnnotatedTag(tag, tagMessage);
-  console.log(`annotated successfully, tag message is :`);
-  console.log(tagMessage + '\r\n');
+  console.log(`annotated successfully, tag message is : \r\n` + tagMessage + '\r\n');
 };
 
 const pushTag = git.pushTags('origin');
 
 (async () => {
   const status = await git.status();
-  await checkBranch(status);
+  // await checkBranch(status);
   await checkVersion();
 
   // 打tag
@@ -60,7 +59,7 @@ const pushTag = git.pushTags('origin');
   if (tag) {
     console.log('🚗 taging... \r\n');
     await tagTag(tag);
-    await pushTag();
+    // await pushTag();
     console.log('✅ push tag successfutlly');
   } else {
     throw new Error(`no tag detected`);

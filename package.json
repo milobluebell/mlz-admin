@@ -23,12 +23,11 @@
     "test:update": "npm run clean && node ./scripts/genIndex && dumi test --cache=false -u --coverage",
     "check-coverage": "npx istanbul check-coverage --statement 85 --branch -75",
     "prettier": "prettier --write '**/*.{js,tsx,ts,less,md,json}'",
-    "version": "AUTO=1 node ./scripts/versioning",
-    "clean": "rm -rf es lib dist .tsc-check coverage packages/mlz-admin/src/index.tsx packages/mlz-adminer/src/index.tsx",
+    "publish": "AUTO=1 node ./scripts/versioning && lerna publish from-git --no-changelog",
+    "clean": "cross-env rm -rf es lib dist .tsc-check coverage packages/mlz-admin/src/index.tsx packages/mlz-adminer/src/index.tsx",
     "clean:lerna": "lerna clean",
-    "relaunch": "npm run clean && npm run clean:lerna && rm -rf node_modules src/.umi && npm install",
-    "boot": "lerna bootstrap",
-    "publish": "lerna publish"
+    "relaunch": "npm run clean && npm run clean:lerna && cross-env rm -rf node_modules src/.umi && npm run boot",
+    "boot": "lerna bootstrap --hoist"
   },
   "gitHooks": {
     "pre-commit": "npx lint-staged && npx pretty-quick --staged"
